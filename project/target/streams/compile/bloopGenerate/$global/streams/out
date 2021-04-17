@@ -1,0 +1,4 @@
+[debug] [slox-build] Classpath dependencies List()
+[debug] [slox-build] Dependencies from configurations List()
+[debug] Bloop wrote the configuration of project 'slox-build' to '/home/merlinwebster/learning/slox/project/.bloop/slox-build.json'
+[success] Generated .bloop/slox-build.json

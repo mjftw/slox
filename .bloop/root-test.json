@@ -1,0 +1,198 @@
+{
+    "version": "1.4.0",
+    "project": {
+        "name": "root-test",
+        "directory": "/home/merlinwebster/learning/slox",
+        "workspaceDir": "/home/merlinwebster/learning/slox",
+        "sources": [
+            "/home/merlinwebster/learning/slox/src/test/scala-2.12",
+            "/home/merlinwebster/learning/slox/src/test/scala",
+            "/home/merlinwebster/learning/slox/src/test/java",
+            "/home/merlinwebster/learning/slox/target/scala-2.12/src_managed/test"
+        ],
+        "dependencies": [
+            "root"
+        ],
+        "classpath": [
+            "/home/merlinwebster/learning/slox/.bloop/root/scala-2.12/classes",
+            "/home/merlinwebster/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.12.8.jar",
+            "/home/merlinwebster/.ivy2/cache/org.scalatest/scalatest_2.12/bundles/scalatest_2.12-3.0.5.jar",
+            "/home/merlinwebster/.ivy2/cache/org.scalactic/scalactic_2.12/bundles/scalactic_2.12-3.0.5.jar",
+            "/home/merlinwebster/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.12.8.jar",
+            "/home/merlinwebster/.ivy2/cache/org.scala-lang.modules/scala-xml_2.12/bundles/scala-xml_2.12-1.0.6.jar"
+        ],
+        "out": "/home/merlinwebster/learning/slox/.bloop/root",
+        "classesDir": "/home/merlinwebster/learning/slox/.bloop/root/scala-2.12/test-classes",
+        "resources": [
+            "/home/merlinwebster/learning/slox/src/test/resources",
+            "/home/merlinwebster/learning/slox/target/scala-2.12/resource_managed/test"
+        ],
+        "scala": {
+            "organization": "org.scala-lang",
+            "name": "scala-compiler",
+            "version": "2.12.8",
+            "options": [
+                
+            ],
+            "jars": [
+                "/home/merlinwebster/.ivy2/cache/org.scala-lang/scala-compiler/jars/scala-compiler-2.12.8.jar",
+                "/home/merlinwebster/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.12.8.jar",
+                "/home/merlinwebster/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.12.8.jar",
+                "/home/merlinwebster/.ivy2/cache/org.scala-lang.modules/scala-xml_2.12/bundles/scala-xml_2.12-1.0.6.jar",
+                "/home/merlinwebster/.ivy2/cache/jline/jline/jars/jline-2.14.6.jar"
+            ],
+            "analysis": "/home/merlinwebster/learning/slox/target/streams/test/bloopAnalysisOut/$global/streams/inc_compile_2.12.zip",
+            "setup": {
+                "order": "mixed",
+                "addLibraryToBootClasspath": true,
+                "addCompilerToClasspath": false,
+                "addExtraJarsToClasspath": false,
+                "manageBootClasspath": true,
+                "filterLibraryFromClasspath": true
+            }
+        },
+        "java": {
+            "options": [
+                
+            ]
+        },
+        "test": {
+            "frameworks": [
+                {
+                    "names": [
+                        "org.scalacheck.ScalaCheckFramework"
+                    ]
+                },
+                {
+                    "names": [
+                        "org.specs2.runner.Specs2Framework",
+                        "org.specs2.runner.SpecsFramework"
+                    ]
+                },
+                {
+                    "names": [
+                        "org.specs.runner.SpecsFramework"
+                    ]
+                },
+                {
+                    "names": [
+                        "org.scalatest.tools.Framework",
+                        "org.scalatest.tools.ScalaTestFramework"
+                    ]
+                },
+                {
+                    "names": [
+                        "com.novocode.junit.JUnitFramework"
+                    ]
+                }
+            ],
+            "options": {
+                "excludes": [
+                    
+                ],
+                "arguments": [
+                    
+                ]
+            }
+        },
+        "platform": {
+            "name": "jvm",
+            "config": {
+                "home": "/usr/lib/jvm/java-11-openjdk-amd64",
+                "options": [
+                    "-Duser.dir=/home/merlinwebster/learning/slox"
+                ]
+            },
+            "mainClass": [
+                
+            ]
+        },
+        "resolution": {
+            "modules": [
+                {
+                    "organization": "org.scala-lang",
+                    "name": "scala-library",
+                    "version": "2.12.8",
+                    "artifacts": [
+                        {
+                            "name": "scala-library",
+                            "path": "/home/merlinwebster/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.12.8.jar"
+                        },
+                        {
+                            "name": "scala-library",
+                            "classifier": "sources",
+                            "path": "/home/merlinwebster/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.12.8-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "org.scalatest",
+                    "name": "scalatest_2.12",
+                    "version": "3.0.5",
+                    "artifacts": [
+                        {
+                            "name": "scalatest_2.12",
+                            "path": "/home/merlinwebster/.ivy2/cache/org.scalatest/scalatest_2.12/bundles/scalatest_2.12-3.0.5.jar"
+                        },
+                        {
+                            "name": "scalatest_2.12",
+                            "classifier": "sources",
+                            "path": "/home/merlinwebster/.ivy2/cache/org.scalatest/scalatest_2.12/srcs/scalatest_2.12-3.0.5-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "org.scalactic",
+                    "name": "scalactic_2.12",
+                    "version": "3.0.5",
+                    "artifacts": [
+                        {
+                            "name": "scalactic_2.12",
+                            "path": "/home/merlinwebster/.ivy2/cache/org.scalactic/scalactic_2.12/bundles/scalactic_2.12-3.0.5.jar"
+                        },
+                        {
+                            "name": "scalactic_2.12",
+                            "classifier": "sources",
+                            "path": "/home/merlinwebster/.ivy2/cache/org.scalactic/scalactic_2.12/srcs/scalactic_2.12-3.0.5-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "org.scala-lang",
+                    "name": "scala-reflect",
+                    "version": "2.12.8",
+                    "artifacts": [
+                        {
+                            "name": "scala-reflect",
+                            "path": "/home/merlinwebster/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.12.8.jar"
+                        },
+                        {
+                            "name": "scala-reflect",
+                            "classifier": "sources",
+                            "path": "/home/merlinwebster/.ivy2/cache/org.scala-lang/scala-reflect/srcs/scala-reflect-2.12.8-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "org.scala-lang.modules",
+                    "name": "scala-xml_2.12",
+                    "version": "1.0.6",
+                    "artifacts": [
+                        {
+                            "name": "scala-xml_2.12",
+                            "path": "/home/merlinwebster/.ivy2/cache/org.scala-lang.modules/scala-xml_2.12/bundles/scala-xml_2.12-1.0.6.jar"
+                        },
+                        {
+                            "name": "scala-xml_2.12",
+                            "classifier": "sources",
+                            "path": "/home/merlinwebster/.ivy2/cache/org.scala-lang.modules/scala-xml_2.12/srcs/scala-xml_2.12-1.0.6-sources.jar"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tags": [
+            "test"
+        ]
+    }
+}
