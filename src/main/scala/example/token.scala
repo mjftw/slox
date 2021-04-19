@@ -14,6 +14,8 @@ object Parse {
     ("""[a-zA-Z]{1}[\w_]*""", VarToken())
   )
 
+  case class ParseError(message: String)
+
   def reLexicon(lexicon: List[(String, Token)]): List[(Regex, Token)] = for (
     (re, token) <- lexicon
   ) yield (s"""^($re)(.*)""".r, token)
@@ -30,14 +32,21 @@ object Parse {
           case _                           => takeToken(input, lexiconRest)
         }
     }
-
   }
 
-  // TODO
-  // @tailrec
-  // def tokenise(
-  //     input: String,
-  //     lexicon: Map[Regex, Token],
-  //     tokens: List[Token] = Nil
-  // ): List[Token]
+  @tailrec
+  def tokenise(
+      input: String,
+      lexicon: List[(Regex, Token)],
+      tokens: List[Token] = Nil
+  ): Either[ParseError, List[Token]] =
+    input match {
+      case "" => Right(tokens.reverse)
+      case _ =>
+        takeToken(input, lexicon) match {
+          case None => Left(ParseError(s"Text didn't match any pattern: $input"))
+          case Some((token, restInput)) =>
+            tokenise(restInput, lexicon, token +: tokens)
+        }
+    }
 }
