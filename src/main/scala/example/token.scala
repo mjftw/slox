@@ -44,9 +44,10 @@ object Parse {
       case "" => Right(tokens.reverse)
       case _ =>
         takeToken(input, lexicon) match {
-          case None => Left(ParseError(s"Text didn't match any pattern: $input"))
+          case None =>
+            Left(ParseError(s"Text didn't match any pattern: $input"))
           case Some((token, restInput)) =>
-            tokenise(restInput, lexicon, token +: tokens)
+            tokenise(restInput, lexicon, token :: tokens)
         }
     }
 }
