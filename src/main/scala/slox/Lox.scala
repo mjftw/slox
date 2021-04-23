@@ -1,6 +1,10 @@
+package slox
+
 import scala.util.{Try, Success, Failure}
 import scala.io.StdIn
 import scala.annotation.tailrec
+
+import Grammar._
 
 object Lox {
   val usage: String = {
@@ -69,5 +73,12 @@ Args:
     }
   }
 
-  def evaluate(code: String): String = s"Mock eval of code ${code}"
+  def evaluate(code: String): String = {
+    Scanner.scanTokens(code) match {
+      case Left(ParseError(error)) => error
+      case Right(tokens) => {
+        tokens.mkString(", ")
+      }
+    }
+  }
 }
