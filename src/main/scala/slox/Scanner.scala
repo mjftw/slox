@@ -44,7 +44,7 @@ object Scanner {
         case _ =>
           takeToken(input, grammar, line, column) match {
             case None =>
-              Left(SyntaxError("Syntax error", line, column))
+              Left(SyntaxError("Syntax error", line, column + 1))
             case Some((token, restInput)) =>
               loop(token :: tokens, restInput, token.line, token.column + token.lexeme.length)
           }
