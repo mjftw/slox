@@ -3,12 +3,20 @@ import scala.util.Try
 import scala.util.Success
 import scala.util.Failure
 
-object Lox extends App {
-  override def main(args: Array[String]): Unit = {
-    val usage: String = """Usage: slox [script]"""
+object Lox {
+  val usage: String = """
+Usage: slox [args] [script]
 
+If no script is supplied the REPL run.
+  
+Args:
+-h, --help:                       Show this text
+"""
+
+  def main(args: Array[String]): Unit = {
     args match {
-      case Array() => runRepl()
+      case Array()                       => runRepl()
+      case Array("-h") | Array("--help") => exitWithMessage(usage, 0)
       case Array(file) =>
         Try(Path(file)) match {
           case Success(path) => runFile(path)
@@ -18,8 +26,9 @@ object Lox extends App {
       case _ => exitWithMessage(usage, 64)
     }
   }
+
   def exitWithMessage(message: String, status: Int): Unit = {
-    println(message)
+    print(message)
     System.exit(status)
   }
 
