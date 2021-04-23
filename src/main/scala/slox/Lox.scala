@@ -75,7 +75,7 @@ Args:
 
   def evaluate(code: String): String = {
     Scanner.scanTokens(code) match {
-      case Left(ParseError(error)) => error
+      case Left(error) => Scanner.formatSyntaxError(error)
       case Right(tokens) => {
         tokens.mkString(", ")
       }

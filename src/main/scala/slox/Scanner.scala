@@ -2,8 +2,9 @@ package slox
 
 import scala.annotation.tailrec
 import Grammar._
+import os.truncate
 
-case class ParseError(message: String)
+case class SyntaxError(line: Int, message: String)
 object Scanner {
   def takeToken(
       input: String,
@@ -18,17 +19,27 @@ object Scanner {
         }
     }
 
+  def getCurrentLine(tokens: List[Token]) = tokens
+    .filter({
+      case _: NewlineToken => true
+      case _               => false
+    })
+    .length + 1
+
+  def formatSyntaxError(error: SyntaxError): String =
+    s"${error.message} on line ${error.line}"
+
   @tailrec
   def scanTokens(
       input: String,
       tokens: List[Token] = Nil
-  )(implicit grammar: Grammar): Either[ParseError, List[Token]] =
+  )(implicit grammar: Grammar): Either[SyntaxError, List[Token]] =
     input match {
       case "" => Right(tokens.reverse)
       case _ =>
         takeToken(input, grammar) match {
           case None =>
-            Left(ParseError(s"Text didn't match any pattern: $input"))
+            Left(SyntaxError(getCurrentLine(tokens), "Syntax error"))
           case Some((token, restInput)) =>
             scanTokens(restInput, token :: tokens)(grammar)
         }
