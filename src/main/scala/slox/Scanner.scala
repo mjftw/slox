@@ -8,7 +8,9 @@ case class SyntaxError(message: String, line: Int, column: Int)
 
 object Scanner {
   val newline = Grammar.patternToRegex("""\r{0,1}\n""")
+  val whitespace = Grammar.patternToRegex("""\s+""")
 
+  // FIXME: This find the *first* matching pattern when it should be finidng the *longest*
   def takeToken(
       input: String,
       grammar: Grammar,
@@ -21,6 +23,8 @@ object Scanner {
         input match {
           case ""                    => Some((Token(EOFToken, "", line, column), ""))
           case newline(_, restInput) => takeToken(restInput, grammar, line + 1, 1)
+          case whitespace(space, restInput) =>
+            takeToken(restInput, grammar, line, column + space.length)
           case pattern(lexeme, restInput) =>
             Some(Token(tokenType, lexeme, line, column), restInput)
           case _ => takeToken(input, grammarRest, line, column)
