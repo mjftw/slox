@@ -9,13 +9,11 @@ case object IntToken extends TokenType
 case object VarToken extends TokenType
 case object EOFToken extends TokenType
 
-sealed trait Literal
-
 case class Token(
     tokenType: TokenType,
     lexeme: String,
-    // literal: Literal,
-    line: Int
+    line: Int,
+    column: Int
 )
 
 object Grammar {
