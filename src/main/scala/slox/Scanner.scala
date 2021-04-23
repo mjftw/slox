@@ -9,7 +9,7 @@ case class IfToken() extends Token
 case class IntToken() extends Token
 case class VarToken() extends Token
 
-object Parse {
+object Scanner {
   val grammar = List(
     ("""if""", IfToken()),
     ("""[0-9]+""", IntToken()),
