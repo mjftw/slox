@@ -1,28 +1,13 @@
-import scala.util.matching.Regex
+package slox
+
 import scala.annotation.tailrec
+import Grammar._
 
 case class ParseError(message: String)
-
-sealed trait Token
-
-case class IfToken() extends Token
-case class IntToken() extends Token
-case class VarToken() extends Token
-
 object Scanner {
-  val grammar = List(
-    ("""if""", IfToken()),
-    ("""[0-9]+""", IntToken()),
-    ("""[a-zA-Z]{1}[\w_]*""", VarToken())
-  ).map(grammarToRegex)
-
-  def grammarToRegex(grammar: (String, Token)): (Regex, Token) = grammar match {
-    case (reStr, token) => (s"""^($reStr)(.*)""".r, token)
-  }
-
   def takeToken(
       input: String,
-      grammar: List[(Regex, Token)]
+      grammar: Grammar
   ): Option[(Token, String)] =
     grammar match {
       case Nil => None
@@ -34,11 +19,10 @@ object Scanner {
     }
 
   @tailrec
-  def tokenise(
+  def scanTokens(
       input: String,
-      grammar: List[(Regex, Token)],
       tokens: List[Token] = Nil
-  ): Either[ParseError, List[Token]] =
+  )(implicit grammar: Grammar): Either[ParseError, List[Token]] =
     input match {
       case "" => Right(tokens.reverse)
       case _ =>
@@ -46,7 +30,7 @@ object Scanner {
           case None =>
             Left(ParseError(s"Text didn't match any pattern: $input"))
           case Some((token, restInput)) =>
-            tokenise(restInput, grammar, token :: tokens)
+            scanTokens(restInput, token :: tokens)(grammar)
         }
     }
 }
