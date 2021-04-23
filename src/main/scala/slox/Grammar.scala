@@ -22,8 +22,7 @@ object Grammar {
   implicit val grammar: Grammar = List(
     (IfToken, """if"""),
     (IntToken, """[0-9]+"""),
-    (VarToken, """[a-zA-Z]{1}[\w_]*"""),
-    (EOFToken, "")
+    (VarToken, """[a-zA-Z]{1}[\w_]*""")
   ).map({ case (token, pattern) => (token, patternToRegex(pattern)) })
 
   def patternToRegex(pattern: String): Regex = s"""(?s)^($pattern)(.*)""".r

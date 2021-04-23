@@ -4,7 +4,7 @@ import scala.annotation.tailrec
 import Grammar._
 import os.truncate
 
-case class SyntaxError(line: Int, message: String)
+case class SyntaxError(message: String, line: Int, column: Int)
 
 object Scanner {
   val newline = Grammar.patternToRegex("""\r{0,1}\n""")
@@ -19,6 +19,7 @@ object Scanner {
       case Nil => None
       case (tokenType, pattern) :: grammarRest =>
         input match {
+          case ""                    => Some((Token(EOFToken, "", line, column), ""))
           case newline(_, restInput) => takeToken(restInput, grammar, line + 1, 1)
           case pattern(lexeme, restInput) =>
             Some(Token(tokenType, lexeme, line, column), restInput)
@@ -27,7 +28,7 @@ object Scanner {
     }
 
   def formatSyntaxError(error: SyntaxError): String =
-    s"${error.message} on line ${error.line}"
+    s"${error.message} on line ${error.line}, ${error.column}"
 
   def scanTokens(input: String)(implicit grammar: Grammar): Either[SyntaxError, List[Token]] = {
 
@@ -43,7 +44,7 @@ object Scanner {
         case _ =>
           takeToken(input, grammar, line, column) match {
             case None =>
-              Left(SyntaxError(0, "Syntax error"))
+              Left(SyntaxError("Syntax error", line, column))
             case Some((token, restInput)) =>
               loop(token :: tokens, restInput, token.line, token.column + token.lexeme.length)
           }
