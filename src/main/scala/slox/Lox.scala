@@ -37,8 +37,8 @@ Args:
     println("Starting REPL. Press Ctrl-D to exit...")
 
     def isExit(s: String): Boolean = s match {
-      case null | "exit" => true
-      case _             => false
+      case null => true
+      case _    => false
     }
 
     @tailrec
