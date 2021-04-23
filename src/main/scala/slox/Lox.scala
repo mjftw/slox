@@ -1,8 +1,5 @@
-import os.Path
-import scala.util.Try
-import scala.util.Success
-import scala.util.Failure
-import scala.io._
+import scala.util.{Try, Success, Failure}
+import scala.io.StdIn
 import scala.annotation.tailrec
 
 object Lox {
@@ -22,7 +19,7 @@ Args:
       case Array()                       => runRepl()
       case Array("-h") | Array("--help") => exitWithMessage(usage, 0)
       case Array(file) =>
-        Try(Path(file)) match {
+        Try(os.Path(file)) match {
           case Success(path) => runFile(path)
           case Failure(err) =>
             exitWithMessage(s"${usage}\n\n${err.getMessage}", -1)
@@ -61,7 +58,16 @@ Args:
     loop()
   }
 
-  def runFile(file: Path) = ???
+  def runFile(file: os.Path): Unit = {
+    Try(os.read(file)) match {
+      case Success(code) => {
+        val output = evaluate(code)
+        println(output)
+      }
+      case Failure(error) =>
+        exitWithMessage(s"Could not open file: ${file}", -1)
+    }
+  }
 
   def evaluate(code: String): String = s"Mock eval of code ${code}"
 }
