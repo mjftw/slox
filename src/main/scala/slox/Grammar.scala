@@ -2,24 +2,31 @@ package slox
 
 import scala.util.matching.Regex
 
-sealed trait Token
+sealed trait TokenType
 
-case class IfToken() extends Token
-case class IntToken() extends Token
-case class VarToken() extends Token
-case class NewlineToken() extends Token
+case object IfTokenType extends TokenType
+case object IntTokenType extends TokenType
+case object VarTokenType extends TokenType
+case object EOFTokenType extends TokenType
+
+sealed trait Literal
+
+case class Token(
+    tokenType: TokenType,
+    lexeme: String,
+    // literal: Literal,
+    line: Int
+)
 
 object Grammar {
-  type Grammar = List[(Regex, Token)]
+  type Grammar = List[(TokenType, Regex)]
 
   implicit val grammar: Grammar = List(
-    ("""if""", IfToken()),
-    ("""[0-9]+""", IntToken()),
-    ("""[a-zA-Z]{1}[\w_]*""", VarToken()),
-    ("""\r{0,1}\n""", NewlineToken())
-  ).map(grammarToRegex)
+    (IfTokenType, """if"""),
+    (IntTokenType, """[0-9]+"""),
+    (VarTokenType, """[a-zA-Z]{1}[\w_]*"""),
+    (EOFTokenType, "")
+  ).map({ case (token, pattern) => (token, patternToRegex(pattern)) })
 
-  def grammarToRegex(grammar: (String, Token)): (Regex, Token) = grammar match {
-    case (reStr, token) => (s"""(?s)^($reStr)(.*)""".r, token)
-  }
+  def patternToRegex(pattern: String): Regex = s"""(?s)^($pattern)(.*)""".r
 }

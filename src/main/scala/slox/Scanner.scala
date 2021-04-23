@@ -6,25 +6,22 @@ import os.truncate
 
 case class SyntaxError(line: Int, message: String)
 object Scanner {
+  val newline = Grammar.patternToRegex("""\r{0,1}\n""")
+
   def takeToken(
       input: String,
-      grammar: Grammar
+      grammar: Grammar,
+      line: Int
   ): Option[(Token, String)] =
     grammar match {
       case Nil => None
-      case (pattern, token) :: lexiconRest =>
+      case (tokenType, pattern) :: grammarRest =>
         input match {
-          case pattern(matched, restInput) => Some((token, restInput))
-          case _                           => takeToken(input, lexiconRest)
+          case newline(_, restInput)      => takeToken(restInput, grammar, line + 1)
+          case pattern(lexeme, restInput) => Some(Token(tokenType, lexeme, line), restInput)
+          case _                          => takeToken(input, grammarRest, line)
         }
     }
-
-  def getCurrentLine(tokens: List[Token]) = tokens
-    .filter({
-      case _: NewlineToken => true
-      case _               => false
-    })
-    .length + 1
 
   def formatSyntaxError(error: SyntaxError): String =
     s"${error.message} on line ${error.line}"
@@ -37,9 +34,9 @@ object Scanner {
     input match {
       case "" => Right(tokens.reverse)
       case _ =>
-        takeToken(input, grammar) match {
+        takeToken(input, grammar, 1) match {
           case None =>
-            Left(SyntaxError(getCurrentLine(tokens), "Syntax error"))
+            Left(SyntaxError(0, "Syntax error"))
           case Some((token, restInput)) =>
             scanTokens(restInput, token :: tokens)(grammar)
         }
