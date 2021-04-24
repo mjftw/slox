@@ -1,6 +1,6 @@
 import Dependencies._
 
-ThisBuild / scalaVersion := "2.12.8"
+ThisBuild / scalaVersion := "2.13.4"
 ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / organization := "com.example"
 ThisBuild / organizationName := "example"
@@ -8,8 +8,8 @@ ThisBuild / organizationName := "example"
 lazy val root = (project in file("."))
   .settings(
     name := "slox",
-    libraryDependencies += scalaTest % Test,
-    libraryDependencies += "com.lihaoyi" %% "os-lib" % "0.2.7"
+    libraryDependencies += "org.scalatest" % "scalatest_2.13" % "3.2.8",
+    libraryDependencies += "com.lihaoyi" %% "os-lib" % "0.7.5"
   )
 
 // Uncomment the following for publishing to Sonatype.
