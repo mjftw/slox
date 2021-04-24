@@ -54,6 +54,10 @@ case class Token(
 object Grammar {
   type Grammar = List[(TokenType, Regex)]
 
+  val newline = Grammar.patternToRegex("""\r{0,1}\n""")
+  val whitespace = Grammar.patternToRegex("""\s+""")
+  val comment = Grammar.patternToRegex("""//.*\r{0,1}\n""")
+
   implicit val grammar: Grammar = List(
     (LeftParenToken, """\("""),
     (RightParenToken, """\)"""),

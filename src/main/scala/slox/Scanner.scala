@@ -7,9 +7,6 @@ import os.truncate
 case class SyntaxError(message: String, line: Int, column: Int)
 
 object Scanner {
-  val newline = Grammar.patternToRegex("""\r{0,1}\n""")
-  val whitespace = Grammar.patternToRegex("""\s+""")
-
   def takeToken(
       input: String,
       grammar: Grammar,
@@ -19,6 +16,7 @@ object Scanner {
     input match {
       case ""                    => Some((Token(EOFToken, "", line, column), ""))
       case newline(_, restInput) => takeToken(restInput, grammar, line + 1, 1)
+      case comment(_, restInput) => takeToken(restInput, grammar, line + 1, 1)
       case whitespace(space, restInput) =>
         takeToken(restInput, grammar, line, column + space.length)
       case _ => {
