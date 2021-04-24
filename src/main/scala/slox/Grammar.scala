@@ -75,7 +75,8 @@ object Grammar {
     (LessToken, """<"""),
     (LessEqualToken, """<="""),
     (StringToken, """\".*\""""),
-    (NumberToken, """[0-9]+"""), // TODO: Should work with decimal points too
+    (NumberToken, """[0-9]+"""),
+    (NumberToken, """[0-9]+\.[0-9]+"""),
     (AndToken, """and"""),
     (OrToken, """or"""),
     (ClassToken, """class"""),
