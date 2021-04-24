@@ -74,7 +74,6 @@ object Grammar {
     (GreaterEqualToken, """>="""),
     (LessToken, """<"""),
     (LessEqualToken, """<="""),
-    (IdentifierToken, """[a-zA-Z_][a-zA-Z_0-9]*"""),
     (StringToken, """\".*\""""),
     (NumberToken, """[0-9]+"""), // TODO: Should work with decimal points too
     (AndToken, """and"""),
@@ -92,7 +91,8 @@ object Grammar {
     (SuperToken, """super"""),
     (ThisToken, """this"""),
     (VarToken, """var"""),
-    (WhileToken, """while""")
+    (WhileToken, """while"""),
+    (IdentifierToken, """[a-zA-Z_][a-zA-Z_0-9]*""")
   ).map({ case (token, pattern) => (token, patternToRegex(pattern)) })
 
   def patternToRegex(pattern: String): Regex = s"""(?s)^($pattern)(.*)""".r
