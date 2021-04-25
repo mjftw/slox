@@ -128,6 +128,10 @@ object Parser {
 
   val expression = equality
 
-  def parseToAst(tokens: List[Token]): Expr = ???
+  def parseToAst(tokens: List[Token]): Expr = {
+    val (unconsumed, expr) = expression(tokens)
+    //TODO: Check unconsumed tokens (errors)
+    expr
+  }
 
 }

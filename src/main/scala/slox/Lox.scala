@@ -6,6 +6,7 @@ import scala.annotation.tailrec
 
 import slox.lexer.Lexer
 import slox.lexer.LexicalGrammar._
+import slox.parser.{Parser, Expr}
 
 object Lox {
   val usage: String = {
@@ -78,7 +79,8 @@ Args:
     Lexer.scanTokens(code) match {
       case Left(error) => Lexer.formatSyntaxError(error)
       case Right(tokens) => {
-        tokens.mkString(", ")
+        val ast = Parser.parseToAst(tokens)
+        Expr.toString(ast)
       }
     }
   }
