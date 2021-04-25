@@ -79,8 +79,10 @@ Args:
     Lexer.scanTokens(code) match {
       case Left(error) => Lexer.formatSyntaxError(error)
       case Right(tokens) => {
-        val ast = Parser.parseToAst(tokens)
-        Expr.toString(ast)
+        Parser.parseToAst(tokens) match {
+          case Left(errors) => errors.map(Parser.formatParseError).mkString("\n")
+          case Right(ast)   => Expr.toString(ast)
+        }
       }
     }
   }
