@@ -56,7 +56,7 @@ object Grammar {
 
   val newline = Grammar.patternToRegex("""\r{0,1}\n""")
   val whitespace = Grammar.patternToRegex("""\s+""")
-  val comment = Grammar.patternToRegex("""//.*\r{0,1}\n""")
+  val comment = """(?s)^//.*?(\n|$)(.*)""".r
 
   implicit val grammar: Grammar = List(
     (LeftParenToken, """\("""),
