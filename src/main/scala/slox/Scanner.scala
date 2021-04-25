@@ -8,6 +8,8 @@ import java.nio.file.Path
 case class SyntaxError(message: String, line: Int, column: Int)
 
 object Scanner {
+  def countNewlines(text: String): Int = "\r{0,1}\n".r.findAllIn(text).length
+
   def takeToken(
       input: String,
       grammar: Grammar,
@@ -18,16 +20,20 @@ object Scanner {
       case ""                    => Some((Token(EOFToken, "", line, column), "", 0))
       case newline(_, restInput) => takeToken(restInput, grammar, line + 1, 1)
       case comment(_, restInput) => takeToken(restInput, grammar, line + 1, 1)
+      case blockComment(comment, restInput) =>
+        takeToken(restInput, grammar, line + countNewlines(comment), 1)
       case whitespace(space, restInput) =>
         takeToken(restInput, grammar, line, column + space.length)
       case _ => {
         grammar
           .map { case (tokenType, pattern) =>
             input match {
-              case pattern(lexeme, restInput) => {
-                val numNewlines = "\r{0,1}\n".r.findAllIn(lexeme).length
-                Some(Token(tokenType, lexeme, line, column), restInput, line + numNewlines)
-              }
+              case pattern(lexeme, restInput) =>
+                Some(
+                  Token(tokenType, lexeme, line, column),
+                  restInput,
+                  line + countNewlines(lexeme)
+                )
               case _ => None
             }
           }
