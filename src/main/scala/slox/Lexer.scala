@@ -1,18 +1,17 @@
-package slox
+package slox.lexer
 
 import scala.annotation.tailrec
-import Grammar._
-import os.truncate
-import java.nio.file.Path
+import LexicalGrammar._
+import os.Path
 
 case class SyntaxError(message: String, line: Int, column: Int)
 
-object Scanner {
+object Lexer {
   def countNewlines(text: String): Int = "\r{0,1}\n".r.findAllIn(text).length
 
   def takeToken(
       input: String,
-      grammar: Grammar,
+      grammar: LexicalGrammar,
       line: Int,
       column: Int
   ): Option[(Token, String, Int)] = {
@@ -49,7 +48,9 @@ object Scanner {
   def formatSyntaxError(error: SyntaxError, file: Option[Path] = None): String =
     s"${error.message} on line ${error.line}, ${error.column}"
 
-  def scanTokens(input: String)(implicit grammar: Grammar): Either[SyntaxError, List[Token]] = {
+  def scanTokens(
+      input: String
+  )(implicit grammar: LexicalGrammar): Either[SyntaxError, List[Token]] = {
     @tailrec
     def loop(
         tokens: List[Token],

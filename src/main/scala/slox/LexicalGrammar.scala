@@ -1,4 +1,4 @@
-package slox
+package slox.lexer
 
 import scala.util.matching.Regex
 
@@ -51,15 +51,15 @@ case class Token(
     column: Int
 )
 
-object Grammar {
-  type Grammar = List[(TokenType, Regex)]
+object LexicalGrammar {
+  type LexicalGrammar = List[(TokenType, Regex)]
 
-  val newline = Grammar.patternToRegex("""\r{0,1}\n""")
-  val whitespace = Grammar.patternToRegex("""\s+""")
+  val newline = patternToRegex("""\r{0,1}\n""")
+  val whitespace = patternToRegex("""\s+""")
   val comment = """(?s)^//.*?(\n|$)(.*)""".r
-  val blockComment = Grammar.patternToRegex("""/\*.*\*/""")
+  val blockComment = patternToRegex("""/\*.*\*/""")
 
-  implicit val grammar: Grammar = List(
+  implicit val grammar: LexicalGrammar = List(
     (LeftParenToken, """\("""),
     (RightParenToken, """\)"""),
     (LeftBraceToken, """\{"""),

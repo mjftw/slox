@@ -4,7 +4,8 @@ import scala.util.{Try, Success, Failure}
 import scala.io.StdIn
 import scala.annotation.tailrec
 
-import Grammar._
+import slox.lexer.Lexer
+import slox.lexer.LexicalGrammar._
 
 object Lox {
   val usage: String = {
@@ -12,7 +13,7 @@ object Lox {
 Usage: slox [args] [script]
 
 If no script is supplied the REPL run.
-  
+
 Args:
 -h, --help:                       Show this text
 """
@@ -74,8 +75,8 @@ Args:
   }
 
   def evaluate(code: String): String = {
-    Scanner.scanTokens(code) match {
-      case Left(error) => Scanner.formatSyntaxError(error)
+    Lexer.scanTokens(code) match {
+      case Left(error) => Lexer.formatSyntaxError(error)
       case Right(tokens) => {
         tokens.mkString(", ")
       }

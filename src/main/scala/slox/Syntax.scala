@@ -1,4 +1,6 @@
-package slox
+package slox.parser
+
+import slox.lexer.Token
 
 sealed trait Expr
 case class Binary(left: Expr, operator: Token, right: Expr) extends Expr
