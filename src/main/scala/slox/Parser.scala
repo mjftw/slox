@@ -14,6 +14,8 @@ import slox.lexer.MinusToken
 import slox.lexer.PlusToken
 import slox.lexer.SlashToken
 import slox.lexer.StarToken
+import slox.lexer.BangToken
+import slox.lexer.EOFToken
 
 sealed trait Expr
 case class Binary(left: Expr, operator: Token, right: Expr) extends Expr
@@ -57,7 +59,22 @@ object Parser {
 
   def primary(tokens: List[Token]): Context = ???
 
-  def unary(tokens: List[Token]): Context = ???
+  def unary(tokens: List[Token]): Context = {
+    val matches = List(BangToken, MinusToken)
+
+    tokens match {
+      case Nil => {
+        println("!!! DO PANIC !!!") //TODO: Better error handling
+        (Nil, Literal(Token(EOFToken, "PANIC", 0, 0)))
+      }
+      case token :: tailTokens if (tokenMatches(token, matches)) => {
+        val operator = token
+        val (restTokens, rightExpr) = unary(tailTokens)
+        (restTokens, Unary(operator, rightExpr))
+      }
+      case _ => primary(tokens)
+    }
+  }
 
   val factor = leftAssocBinOp(List(SlashToken, StarToken))(unary)
 
