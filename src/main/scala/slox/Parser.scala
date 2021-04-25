@@ -16,6 +16,12 @@ import slox.lexer.SlashToken
 import slox.lexer.StarToken
 import slox.lexer.BangToken
 import slox.lexer.EOFToken
+import slox.lexer.FalseToken
+import slox.lexer.NilToken
+import slox.lexer.NumberToken
+import slox.lexer.StringToken
+import slox.lexer.RightParenToken
+import slox.lexer.LeftParenToken
 
 sealed trait Expr
 case class Binary(left: Expr, operator: Token, right: Expr) extends Expr
@@ -32,11 +38,27 @@ object Expr {
   }
 }
 
+//TODO: Should also have line and col numbers
+case class ParseError(message: String)
+
 object Parser {
   type Context = (List[Token], Expr)
 
   def tokenMatches(token: Token, matches: List[TokenType]): Boolean =
     matches.exists(_ == token.tokenType)
+
+  def consume(tokens: List[Token], ofType: TokenType): List[Token] =
+    tokens match {
+      case Token(ofType, _, _, _) :: tailTokens => tailTokens
+      case Nil => {
+        println("Unexpected end of file in consume")
+        Nil
+      }
+      case _ => {
+        println(s"Expected ${ofType}")
+        Nil
+      }
+    }
 
   def leftAssocBinOp(matches: List[TokenType])(
       goDeeper: List[Token] => Context
@@ -57,15 +79,33 @@ object Parser {
     loop(goDeeper(tokens))
   }
 
-  def primary(tokens: List[Token]): Context = ???
+  def primary(tokens: List[Token]): Context = tokens match {
+    case Nil => { // Error: Unexpected end of file
+      println("!!! DO PANIC !!!") //TODO: Better error handling
+      (Nil, Literal(Token(EOFToken, "Unexpected EOF in primary", 0, 0)))
+    }
+    case token :: tailTokens =>
+      token.tokenType match {
+        case TrueToken | FalseToken | NilToken | NumberToken | StringToken =>
+          (tailTokens, Literal(token))
+        case LeftParenToken => {
+          val (restTokens, expr) = expression(tailTokens)
+          (consume(restTokens, RightParenToken), Grouping(expr))
+        }
+        case _ => { // Error: Expected a literal
+          println("!!! DO PANIC !!!") //TODO: Better error handling
+          (Nil, Literal(Token(EOFToken, "Expected a literal", 0, 0)))
+        }
+      }
+  }
 
   def unary(tokens: List[Token]): Context = {
     val matches = List(BangToken, MinusToken)
 
     tokens match {
-      case Nil => {
+      case Nil => { // Error: Unexpected end of file
         println("!!! DO PANIC !!!") //TODO: Better error handling
-        (Nil, Literal(Token(EOFToken, "PANIC", 0, 0)))
+        (Nil, Literal(Token(EOFToken, "Unexpected EOF in unary", 0, 0)))
       }
       case token :: tailTokens if (tokenMatches(token, matches)) => {
         val operator = token
