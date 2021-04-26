@@ -251,7 +251,21 @@ comment*/bar = true
     ),
     """ "hello" "world" """
   )
-  //TODO: Test for multiline strings
+
+  it should "handle multi line strings" in tokensHaveTypes(
+    List(
+      NumberToken,
+      StringToken,
+      NumberToken,
+      EOFToken
+    ),
+    """1 "I
+    am a
+    mutiline string
+    "
+    2
+    """
+  )
 
   it should "correctly track token lines and columns" in {
     var expected = List(
