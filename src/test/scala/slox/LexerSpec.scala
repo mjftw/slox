@@ -225,4 +225,30 @@ foo = 12.345 // Pointless comment
 bar = true
 """
   )
+
+  it should "ignore block comments" in tokensHaveTypes(
+    List(
+      IdentifierToken,
+      EqualToken,
+      NumberToken,
+      IdentifierToken,
+      EqualToken,
+      TrueToken,
+      EOFToken
+    ),
+    """/* Single line comment */
+foo = 12.345 /* Multi line
+block
+comment*/bar = true
+"""
+  )
+
+  it should "handle sequential strings" in tokensHaveTypes(
+    List(
+      StringToken,
+      StringToken,
+      EOFToken
+    ),
+    """ "hello" "world" """
+  )
 }

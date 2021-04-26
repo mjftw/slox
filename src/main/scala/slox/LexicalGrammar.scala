@@ -57,7 +57,7 @@ object LexicalGrammar {
   val newline = patternToRegex("""\r{0,1}\n""")
   val whitespace = patternToRegex("""\s+""")
   val comment = """(?s)^//.*?(\n|$)(.*)""".r
-  val blockComment = patternToRegex("""/\*.*\*/""")
+  val blockComment = patternToRegex("""\/\*.*?\*\/""")
 
   implicit val grammar: LexicalGrammar = List(
     (LeftParenToken, """\("""),
@@ -79,7 +79,7 @@ object LexicalGrammar {
     (GreaterEqualToken, """>="""),
     (LessToken, """<"""),
     (LessEqualToken, """<="""),
-    (StringToken, """\".*\""""),
+    (StringToken, """\".*?\""""),
     (NumberToken, """[0-9]+"""),
     (NumberToken, """[0-9]+\.[0-9]+"""),
     (AndToken, """and"""),
