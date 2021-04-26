@@ -49,8 +49,9 @@ object Lexer {
     s"${error.message} on line ${error.line}, ${error.column}"
 
   def scanTokens(
-      input: String
-  )(implicit grammar: LexicalGrammar): Either[SyntaxError, List[Token]] = {
+      input: String,
+      grammar: LexicalGrammar = LexicalGrammar.grammar
+  ): Either[SyntaxError, List[Token]] = {
     @tailrec
     def loop(
         tokens: List[Token],
