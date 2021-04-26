@@ -8,6 +8,10 @@ case class SyntaxError(message: String, line: Int, column: Int)
 
 object Lexer {
   def countNewlines(text: String): Int = "\r{0,1}\n".r.findAllIn(text).length
+  def endColumn(text: String): Int = {
+    val afterNewlines = """(?s).*\r{0,1}\n""".r.replaceFirstIn(text, "")
+    afterNewlines.length()
+  }
 
   def takeToken(
       input: String,
@@ -20,7 +24,7 @@ object Lexer {
       case newline(_, restInput) => takeToken(restInput, grammar, line + 1, 1)
       case comment(_, restInput) => takeToken(restInput, grammar, line + 1, 1)
       case blockComment(comment, restInput) =>
-        takeToken(restInput, grammar, line + countNewlines(comment), 1)
+        takeToken(restInput, grammar, line + countNewlines(comment), 1 + endColumn(comment))
       case whitespace(space, restInput) =>
         takeToken(restInput, grammar, line, column + space.length)
       case _ => {

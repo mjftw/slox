@@ -251,4 +251,29 @@ comment*/bar = true
     ),
     """ "hello" "world" """
   )
+  //TODO: Test for multiline strings
+
+  it should "correctly track token lines and columns" in {
+    var expected = List(
+      Token(StringToken, "", 2, 5),
+      Token(TrueToken, "", 6, 12),
+      Token(IfToken, "", 7, 1),
+      Token(FalseToken, "", 9, 3),
+      Token(EOFToken, "", 10, 1)
+    )
+
+    var tokensWithoutLexemes = getTokens("""
+    "a
+  multi line
+  string"
+  /* block
+comment */ true
+if
+// line comment
+  false
+""").map({ case Token(t, _, l, c) => Token(t, "", l, c) })
+
+    tokensWithoutLexemes should contain theSameElementsInOrderAs (expected)
+  }
+
 }
