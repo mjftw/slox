@@ -28,7 +28,7 @@ class LexerSpec extends AnyFlatSpec with Matchers with EitherValues with TableDr
   def firstTokenHasLexeme(lexeme: String, inText: String) =
     getFirstToken(inText).lexeme should be(lexeme)
 
-  def prefixTokensHaveTypes(types: List[TokenType], inText: String) = {
+  def tokensHaveTypes(types: List[TokenType], inText: String) = {
     val tokenTypes = getTokens(inText).map(_.tokenType)
 
     types should contain theSameElementsInOrderAs (tokenTypes)
@@ -81,7 +81,7 @@ class LexerSpec extends AnyFlatSpec with Matchers with EitherValues with TableDr
     firstTokenHasLexeme(str, str)
   }
 
-  it should "find multiple tokens in a single line" in prefixTokensHaveTypes(
+  it should "find multiple tokens in a single line" in tokensHaveTypes(
     List(
       LeftParenToken,
       RightParenToken,
@@ -126,7 +126,7 @@ class LexerSpec extends AnyFlatSpec with Matchers with EitherValues with TableDr
     ),
     "( ) { } , . - + ; / * ! != = == > >= < <= foo \"foo\" 42 3.14 and or class false true fun for if else nil print return super this var while"
   )
-  it should "find multiple tokens over multiple lines" in prefixTokensHaveTypes(
+  it should "find multiple tokens over multiple lines" in tokensHaveTypes(
     List(
       LeftParenToken,
       RightParenToken,
@@ -208,5 +208,21 @@ super
 this
 var
 while"""
+  )
+
+  it should "ignore line comments" in tokensHaveTypes(
+    List(
+      IdentifierToken,
+      EqualToken,
+      NumberToken,
+      IdentifierToken,
+      EqualToken,
+      TrueToken,
+      EOFToken
+    ),
+    """// First line comment
+foo = 12.345 // Pointless comment
+bar = true
+"""
   )
 }
