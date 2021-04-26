@@ -1,11 +1,13 @@
 package slox
 
 import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.EitherValues
+import org.scalatest.prop.TableDrivenPropertyChecks
 import slox.lexer._
 
-class LexerSpec extends AnyFlatSpec with Matchers with EitherValues {
+class LexerSpec extends AnyFlatSpec with Matchers with EitherValues with TableDrivenPropertyChecks {
   def getTokens(inText: String): List[Token] = {
     val maybeTokens = Lexer.scanTokens(inText)
 
@@ -25,6 +27,12 @@ class LexerSpec extends AnyFlatSpec with Matchers with EitherValues {
 
   def firstTokenHasLexeme(lexeme: String, inText: String) =
     getFirstToken(inText).lexeme should be(lexeme)
+
+  def prefixTokensHaveTypes(types: List[TokenType], inText: String) = {
+    val tokenTypes = getTokens(inText).map(_.tokenType)
+
+    types should contain theSameElementsInOrderAs (tokenTypes)
+  }
 
   "scanTokens" should "always put an EOF token last" in firstTokenHasType(EOFToken, "")
 
@@ -72,4 +80,133 @@ class LexerSpec extends AnyFlatSpec with Matchers with EitherValues {
     val str = "\"j!I_A.w,@W~R+N=y-5~6[a]}{|\\><£$%^&*:;#`\""
     firstTokenHasLexeme(str, str)
   }
+
+  it should "find multiple tokens in a single line" in prefixTokensHaveTypes(
+    List(
+      LeftParenToken,
+      RightParenToken,
+      LeftBraceToken,
+      RightBraceToken,
+      CommaToken,
+      DotToken,
+      MinusToken,
+      PlusToken,
+      SemicolonToken,
+      SlashToken,
+      StarToken,
+      BangToken,
+      BangEqualToken,
+      EqualToken,
+      EqualEqualToken,
+      GreaterToken,
+      GreaterEqualToken,
+      LessToken,
+      LessEqualToken,
+      IdentifierToken,
+      StringToken,
+      NumberToken,
+      NumberToken,
+      AndToken,
+      OrToken,
+      ClassToken,
+      FalseToken,
+      TrueToken,
+      FunToken,
+      ForToken,
+      IfToken,
+      ElseToken,
+      NilToken,
+      PrintToken,
+      ReturnToken,
+      SuperToken,
+      ThisToken,
+      VarToken,
+      WhileToken,
+      EOFToken
+    ),
+    "( ) { } , . - + ; / * ! != = == > >= < <= foo \"foo\" 42 3.14 and or class false true fun for if else nil print return super this var while"
+  )
+  it should "find multiple tokens over multiple lines" in prefixTokensHaveTypes(
+    List(
+      LeftParenToken,
+      RightParenToken,
+      LeftBraceToken,
+      RightBraceToken,
+      CommaToken,
+      DotToken,
+      MinusToken,
+      PlusToken,
+      SemicolonToken,
+      SlashToken,
+      StarToken,
+      BangToken,
+      BangEqualToken,
+      EqualToken,
+      EqualEqualToken,
+      GreaterToken,
+      GreaterEqualToken,
+      LessToken,
+      LessEqualToken,
+      IdentifierToken,
+      StringToken,
+      NumberToken,
+      NumberToken,
+      AndToken,
+      OrToken,
+      ClassToken,
+      FalseToken,
+      TrueToken,
+      FunToken,
+      ForToken,
+      IfToken,
+      ElseToken,
+      NilToken,
+      PrintToken,
+      ReturnToken,
+      SuperToken,
+      ThisToken,
+      VarToken,
+      WhileToken,
+      EOFToken
+    ),
+    """(
+)
+{
+}
+,
+.
+-
++
+;
+/
+*
+!
+!=
+=
+==
+>
+>=
+<
+<=
+foo
+"foo"
+42
+3.14
+and
+or
+class
+false
+true
+fun
+for
+if
+else
+nil
+print
+return
+super
+this
+var
+while"""
+  )
 }
