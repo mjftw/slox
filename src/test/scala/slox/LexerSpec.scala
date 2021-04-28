@@ -4,10 +4,9 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.EitherValues
-import org.scalatest.prop.TableDrivenPropertyChecks
 import slox.lexer._
 
-class LexerSpec extends AnyFlatSpec with Matchers with EitherValues with TableDrivenPropertyChecks {
+class LexerSpec extends AnyFlatSpec with Matchers with EitherValues {
   def getTokens(inText: String): List[Token] = {
     val maybeTokens = Lexer.scanTokens(inText)
 

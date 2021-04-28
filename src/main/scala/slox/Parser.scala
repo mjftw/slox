@@ -75,7 +75,10 @@ object Parser {
     case token :: tailTokens =>
       token.tokenType match {
         case TrueToken | FalseToken | NilToken | NumberToken | StringToken =>
-          (tailTokens, Literal(token), Nil)
+          Expr.toLiteral(token) match {
+            case Left(error)    => (Nil, NoExpr(), List(error))
+            case Right(literal) => (tailTokens, literal, Nil)
+          }
         case LeftParenToken => {
           val (restTokens1, expr, errors1) = expression(tailTokens)
           val (restTokens2, _, errors2) = consume(restTokens1, RightParenToken)
