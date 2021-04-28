@@ -5,7 +5,6 @@ import scala.io.StdIn
 import scala.annotation.tailrec
 
 import slox.lexer.Lexer
-import slox.lexer.LexicalGrammar._
 import slox.parser.{Parser, Expr}
 
 object Lox {

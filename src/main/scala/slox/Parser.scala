@@ -1,47 +1,8 @@
 package slox.parser
 
-import slox.lexer.Token
 import scala.annotation.tailrec
-import slox.lexer.BangEqualToken
-import slox.lexer.EqualEqualToken
-import slox.lexer.TrueToken
-import slox.lexer.TokenType
-import slox.lexer.GreaterToken
-import slox.lexer.GreaterEqualToken
-import slox.lexer.LessToken
-import slox.lexer.LessEqualToken
-import slox.lexer.MinusToken
-import slox.lexer.PlusToken
-import slox.lexer.SlashToken
-import slox.lexer.StarToken
-import slox.lexer.BangToken
-import slox.lexer.EOFToken
-import slox.lexer.FalseToken
-import slox.lexer.NilToken
-import slox.lexer.NumberToken
-import slox.lexer.StringToken
-import slox.lexer.RightParenToken
-import slox.lexer.LeftParenToken
-import slox.lexer.SemicolonToken
+import slox.lexer._
 
-sealed trait Expr
-case class Binary(left: Expr, operator: Token, right: Expr) extends Expr
-case class Grouping(expr: Expr) extends Expr
-case class Literal(token: Token) extends Expr
-case class Unary(operator: Token, right: Expr) extends Expr
-case class NoExpr() extends Expr
-
-object Expr {
-  def toString(expression: Expr): String = expression match {
-    case Binary(left, op, right)         => s"(${op.lexeme} ${toString(left)} ${toString(right)})"
-    case Grouping(expr)                  => s"(group ${toString(expr)})"
-    case Literal(Token(_, lexeme, _, _)) => lexeme
-    case Unary(op, right)                => s"(${op.lexeme} ${toString(right)})"
-    case NoExpr()                        => "<empty>"
-  }
-}
-
-//TODO: Should also have line and col numbers
 case class ParseError(message: String, line: Option[Int], column: Option[Int])
 
 object Parser {
@@ -160,7 +121,7 @@ object Parser {
 
   def parseToAst(tokens: List[Token]): Either[List[ParseError], Expr] = {
     val (unconsumed, expr, errors) = expression(tokens)
-    //TODO: Check unconsumed tokens (errors)
+
     errors match {
       case Nil => Right(expr)
       case _   => Left(errors)
