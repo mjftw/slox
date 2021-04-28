@@ -125,7 +125,14 @@ object Parser {
   def parseToAst(tokens: List[Token]): Either[List[ParseError], Expr] = {
     val (unconsumed, expr, errors) = expression(tokens)
 
-    errors match {
+    val fullErrors = unconsumed match {
+      case Nil                             => errors
+      case Token(EOFToken, _, _, _) :: Nil => errors
+      case Token(t, lexeme, line, col) :: _ =>
+        parseError(s"Unconsumed token ${t}", line, col) :: errors
+    }
+
+    fullErrors match {
       case Nil => Right(expr)
       case _   => Left(errors)
     }
