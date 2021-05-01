@@ -81,7 +81,11 @@ Args:
       case Right(tokens) => {
         Parser.parseToAst(tokens) match {
           case Left(errors) => errors.map(SyntaxError.formatError).mkString("\n")
-          case Right(ast)   => Expr.toString(Eval.evaluate(ast))
+          case Right(ast) =>
+            Eval.evaluate(ast) match {
+              case Left(errors) => errors.map(SyntaxError.formatError).mkString("\n")
+              case Right(expr)  => Expr.toString(expr)
+            }
         }
       }
     }
