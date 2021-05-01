@@ -2,6 +2,7 @@ package slox.parser
 
 import scala.util.Try
 import slox.lexer._
+import slox.SyntaxError
 
 sealed trait Expr
 case class Binary(left: Expr, operator: Token, right: Expr) extends Expr
@@ -29,28 +30,28 @@ object Expr {
     case NoExpr()              => "<empty>"
   }
 
-  def toLiteral(token: Token): Either[ParseError, Literal] = token match {
+  def toLiteral(token: Token): Either[SyntaxError, Literal] = token match {
     case Token(StringToken, lexeme, _, _) => Right(StringLiteral(lexeme, Some(token)))
-    case Token(NumberToken, lexeme, line, column) =>
+    case Token(NumberToken, lexeme, _, _) =>
       Try(NumberLiteral(lexeme.toDouble, Some(token))).toEither
         .fold(
-          l => Left(Parser.parseError(s"${lexeme} is not a valid number", line, column)),
+          l => Left(SyntaxError.fromToken(s"${lexeme} is not a valid number", token)),
           r => Right(r)
         )
-    case Token(TrueToken, lexeme, line, column) =>
+    case Token(TrueToken, lexeme, _, _) =>
       Try(BoolLiteral(lexeme.toBoolean, Some(token))).toEither
         .fold(
-          l => Left(Parser.parseError(s"${lexeme} is not a valid boolean", line, column)),
+          l => Left(SyntaxError.fromToken(s"${lexeme} is not a valid boolean", token)),
           r => Right(r)
         )
-    case Token(FalseToken, lexeme, line, column) =>
+    case Token(FalseToken, lexeme, _, _) =>
       Try(BoolLiteral(lexeme.toBoolean, Some(token))).toEither
         .fold(
-          l => Left(Parser.parseError(s"${lexeme} is not a valid boolean", line, column)),
+          l => Left(SyntaxError.fromToken(s"${lexeme} is not a valid boolean", token)),
           r => Right(r)
         )
     case Token(NilToken, _, _, _) => Right(NilLiteral(Some(token)))
-    case Token(_, lexeme, line, col) =>
-      Left(Parser.parseError(s"${lexeme} is not a valid literal", line, col))
+    case _ =>
+      Left(SyntaxError.fromToken(s"${token.lexeme} is not a valid literal", token))
   }
 }

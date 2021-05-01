@@ -1,35 +1,11 @@
 package slox.parser
 
+import slox.SyntaxError
 import scala.annotation.tailrec
 import slox.lexer._
 
-case class ParseError(message: String, line: Option[Int], column: Option[Int])
-
 object Parser {
-  type Context = (List[Token], Expr, List[ParseError])
-
-  def parseError(
-      message: String,
-      line: Int = -1,
-      column: Int = -1
-  ) = {
-    val maybeLine = if (line < 0) None else Some(line)
-    val maybeColumn = if (column < 0) None else Some(column)
-    ParseError(message, maybeLine, maybeColumn)
-  }
-
-  def formatParseError(error: ParseError): String = {
-    val lineStr = error.line match {
-      case None       => ""
-      case Some(line) => s" on line ${line}"
-    }
-    val columnStr = error.column match {
-      case None         => ""
-      case Some(column) => s" column ${column}"
-    }
-
-    s"Parse error${lineStr}${columnStr}: ${error.message}"
-  }
+  type Context = (List[Token], Expr, List[SyntaxError])
 
   def tokenMatches(token: Token, matches: List[TokenType]): Boolean =
     matches.exists(_ == token.tokenType)
@@ -42,11 +18,11 @@ object Parser {
     tokens match {
       case Token(ofType, _, _, _) :: tailTokens => (tailTokens, NoExpr(), Nil)
       case Nil => {
-        val error = parseError(s"Found end of file while looking for a ${ofType}")
+        val error = SyntaxError.error(s"Found end of file while looking for a ${ofType}")
         (Nil, NoExpr(), List(error))
       }
       case token :: tailTokens => {
-        val error = parseError(s"Expected a ${ofType} but found: ${token.lexeme}")
+        val error = SyntaxError.error(s"Expected a ${ofType} but found: ${token.lexeme}")
         (tailTokens, NoExpr(), List(error))
       }
     }
@@ -71,7 +47,8 @@ object Parser {
   }
 
   def primary(tokens: List[Token]): Context = tokens match {
-    case Nil => (Nil, NoExpr(), List(parseError("Reached end of file while looking for literal!")))
+    case Nil =>
+      (Nil, NoExpr(), List(SyntaxError.error("Reached end of file while looking for literal!")))
     case token :: tailTokens =>
       token.tokenType match {
         case TrueToken | FalseToken | NilToken | NumberToken | StringToken =>
@@ -89,7 +66,7 @@ object Parser {
         }
         case _ => {
           val error =
-            parseError(s"Expected a value, not a ${token.tokenType}", token.line, token.column)
+            SyntaxError.fromToken(s"Expected a value, not a ${token.tokenType}", token)
           val (restTokens, expr, errors) = expression(synchronise(tokens))
           (restTokens, expr, error :: errors)
         }
@@ -100,7 +77,7 @@ object Parser {
     val matches = List(BangToken, MinusToken)
 
     tokens match {
-      case Nil => (Nil, NoExpr(), List(parseError("Unexpected end of file!")))
+      case Nil => (Nil, NoExpr(), List(SyntaxError.error("Unexpected end of file!")))
       case token :: tailTokens if (tokenMatches(token, matches)) => {
         val operator = token
         val (restTokens, rightExpr, errors) = unary(tailTokens)
@@ -122,14 +99,14 @@ object Parser {
 
   val expression = equality
 
-  def parseToAst(tokens: List[Token]): Either[List[ParseError], Expr] = {
+  def parseToAst(tokens: List[Token]): Either[List[SyntaxError], Expr] = {
     val (unconsumed, expr, errors) = expression(tokens)
 
     val fullErrors = unconsumed match {
       case Nil                             => errors
       case Token(EOFToken, _, _, _) :: Nil => errors
-      case Token(t, lexeme, line, col) :: _ =>
-        parseError(s"Unconsumed token ${t}", line, col) :: errors
+      case token :: _ =>
+        SyntaxError.fromToken(s"Unconsumed token ${token.tokenType}", token) :: errors
     }
 
     fullErrors match {
