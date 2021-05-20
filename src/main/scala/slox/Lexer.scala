@@ -4,7 +4,7 @@ import scala.annotation.tailrec
 import LexicalGrammar._
 import os.Path
 
-case class SyntaxError(message: String, line: Int, column: Int)
+import slox.SyntaxError
 
 object Lexer {
   def countNewlines(text: String): Int = "\r{0,1}\n".r.findAllIn(text).length
@@ -65,7 +65,7 @@ object Lexer {
     ): Either[SyntaxError, List[Token]] =
       takeToken(input, grammar, line, column) match {
         case None =>
-          Left(SyntaxError("Syntax error", line, column))
+          Left(SyntaxError("Syntax error", Some(line), Some(column)))
         case Some((token, _, _)) if token.tokenType == EOFToken => Right((token :: tokens).reverse)
         case Some((token, restInput, lineNum)) =>
           loop(token :: tokens, restInput, lineNum, token.column + token.lexeme.length)

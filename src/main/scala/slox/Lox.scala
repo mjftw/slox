@@ -1,5 +1,6 @@
 package slox
 
+import cats.syntax.either._
 import scala.util.{Try, Success, Failure}
 import scala.io.StdIn
 import scala.annotation.tailrec
@@ -76,18 +77,15 @@ Args:
   }
 
   def evaluate(code: String): String = {
-    Lexer.scanTokens(code) match {
-      case Left(error) => Lexer.formatSyntaxError(error)
-      case Right(tokens) => {
-        Parser.parseToAst(tokens) match {
-          case Left(errors) => errors.map(SyntaxError.formatError).mkString("\n")
-          case Right(ast) =>
-            Eval.evaluate(ast) match {
-              case Left(errors) => errors.map(SyntaxError.formatError).mkString("\n")
-              case Right(expr)  => Expr.toString(expr)
-            }
-        }
-      }
+    val result = for {
+      tokens <- Lexer.scanTokens(code).leftMap(List(_))
+      ast <- Parser.parseToAst(tokens)
+      expression <- Eval.evaluate(ast)
+    } yield expression
+
+    result match {
+      case Left(errors)      => errors.map(SyntaxError.formatError).mkString("\n")
+      case Right(expression) => Expr.toString(expression)
     }
   }
 }
