@@ -56,7 +56,7 @@ Args:
         case msg if isExit(msg) => println("\nGoodbye!")
         case code => {
           val output = evaluate(code)
-          println(s"\n${output}")
+          println(output)
           loop()
         }
       }
