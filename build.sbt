@@ -9,7 +9,8 @@ lazy val root = (project in file("."))
   .settings(
     name := "slox",
     libraryDependencies += "org.scalatest" % "scalatest_2.13" % "3.2.8",
-    libraryDependencies += "com.lihaoyi" %% "os-lib" % "0.7.5"
+    libraryDependencies += "com.lihaoyi" %% "os-lib" % "0.7.5",
+    libraryDependencies += "org.typelevel" %% "cats-core" % "2.6.0"
   )
 
 // Uncomment the following for publishing to Sonatype.
