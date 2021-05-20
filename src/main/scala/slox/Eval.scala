@@ -20,6 +20,8 @@ object Eval {
             Right(NumberLiteral(lVal - rVal, None))
           case (NumberLiteral(lVal, _), Token.Star, NumberLiteral(rVal, _)) =>
             Right(NumberLiteral(lVal * rVal, None))
+          case (NumberLiteral(lVal, _), Token.Slash, NumberLiteral(0, _)) =>
+            Left(List(slox.RuntimeError.fromString("Division by zero")))
           case (NumberLiteral(lVal, _), Token.Slash, NumberLiteral(rVal, _)) =>
             Right(NumberLiteral(lVal / rVal, None))
           case (BoolLiteral(lVal, _), Token.EqualEqual, BoolLiteral(rVal, _)) =>
@@ -29,7 +31,7 @@ object Eval {
           case (l, _, r) =>
             Left(
               List(
-                slox.SyntaxError.error(
+                slox.SyntaxError.fromString(
                   s"Invalid operation: ${Expr.toString(l)} ${expr.operator.lexeme} ${Expr.toString(r)}"
                 )
               )
@@ -52,7 +54,7 @@ object Eval {
           case _ =>
             Left(
               List(
-                SyntaxError.error(
+                SyntaxError.fromString(
                   s"Invalid operation: ${expr.operator.lexeme} ${Expr.toString(rExpr)}"
                 )
               )
@@ -72,6 +74,6 @@ object Eval {
     case expr: Unary    => evaluateUnary(expr)
     case expr: Grouping => evaluateGrouping(expr)
     case expr =>
-      Left(List(SyntaxError.error(s"Unsupported expression: ${Expr.toString(expr)}")))
+      Left(List(SyntaxError.fromString(s"Unsupported expression: ${Expr.toString(expr)}")))
   }
 }

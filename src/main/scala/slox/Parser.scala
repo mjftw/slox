@@ -18,11 +18,11 @@ object Parser {
     tokens match {
       case Token(ofType, _, _, _) :: tailTokens => (tailTokens, NoExpr(), Nil)
       case Nil => {
-        val error = SyntaxError.error(s"Found end of file while looking for a ${ofType}")
+        val error = SyntaxError.fromString(s"Found end of file while looking for a ${ofType}")
         (Nil, NoExpr(), List(error))
       }
       case token :: tailTokens => {
-        val error = SyntaxError.error(s"Expected a ${ofType} but found: ${token.lexeme}")
+        val error = SyntaxError.fromString(s"Expected a ${ofType} but found: ${token.lexeme}")
         (tailTokens, NoExpr(), List(error))
       }
     }
@@ -48,7 +48,11 @@ object Parser {
 
   def primary(tokens: List[Token]): Context = tokens match {
     case Nil =>
-      (Nil, NoExpr(), List(SyntaxError.error("Reached end of file while looking for literal!")))
+      (
+        Nil,
+        NoExpr(),
+        List(SyntaxError.fromString("Reached end of file while looking for literal!"))
+      )
     case token :: tailTokens =>
       token.tokenType match {
         case Token.True | Token.False | Token.Nil | Token.Number | Token.String =>
@@ -77,7 +81,7 @@ object Parser {
     val matches = List(Token.Bang, Token.Minus)
 
     tokens match {
-      case Nil => (Nil, NoExpr(), List(SyntaxError.error("Unexpected end of file!")))
+      case Nil => (Nil, NoExpr(), List(SyntaxError.fromString("Unexpected end of file!")))
       case token :: tailTokens if (tokenMatches(token, matches)) => {
         val operator = token
         val (restTokens, rightExpr, errors) = unary(tailTokens)
