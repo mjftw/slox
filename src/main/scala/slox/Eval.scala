@@ -21,7 +21,7 @@ object Eval {
           case (NumberLiteral(lVal, _), Token.Star, NumberLiteral(rVal, _)) =>
             Right(NumberLiteral(lVal * rVal, None))
           case (NumberLiteral(lVal, _), Token.Slash, NumberLiteral(0, _)) =>
-            Left(List(slox.RuntimeError.fromString("Division by zero")))
+            Left(List(slox.RuntimeError.fromToken("Division by zero", expr.operator)))
           case (NumberLiteral(lVal, _), Token.Slash, NumberLiteral(rVal, _)) =>
             Right(NumberLiteral(lVal / rVal, None))
           case (BoolLiteral(lVal, _), Token.EqualEqual, BoolLiteral(rVal, _)) =>
