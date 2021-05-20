@@ -31,26 +31,26 @@ object Expr {
   }
 
   def toLiteral(token: Token): Either[SyntaxError, Literal] = token match {
-    case Token(StringToken, lexeme, _, _) => Right(StringLiteral(lexeme, Some(token)))
-    case Token(NumberToken, lexeme, _, _) =>
+    case Token(Token.String, lexeme, _, _) => Right(StringLiteral(lexeme, Some(token)))
+    case Token(Token.Number, lexeme, _, _) =>
       Try(NumberLiteral(lexeme.toDouble, Some(token))).toEither
         .fold(
           l => Left(SyntaxError.fromToken(s"${lexeme} is not a valid number", token)),
           r => Right(r)
         )
-    case Token(TrueToken, lexeme, _, _) =>
+    case Token(Token.True, lexeme, _, _) =>
       Try(BoolLiteral(lexeme.toBoolean, Some(token))).toEither
         .fold(
           l => Left(SyntaxError.fromToken(s"${lexeme} is not a valid boolean", token)),
           r => Right(r)
         )
-    case Token(FalseToken, lexeme, _, _) =>
+    case Token(Token.False, lexeme, _, _) =>
       Try(BoolLiteral(lexeme.toBoolean, Some(token))).toEither
         .fold(
           l => Left(SyntaxError.fromToken(s"${lexeme} is not a valid boolean", token)),
           r => Right(r)
         )
-    case Token(NilToken, _, _, _) => Right(NilLiteral(Some(token)))
+    case Token(Token.Nil, _, _, _) => Right(NilLiteral(Some(token)))
     case _ =>
       Left(SyntaxError.fromToken(s"${token.lexeme} is not a valid literal", token))
   }

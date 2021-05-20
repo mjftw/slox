@@ -20,7 +20,7 @@ object Lexer {
       column: Int
   ): Option[(Token, String, Int)] = {
     input match {
-      case ""                    => Some((Token(EOFToken, "", line, column), "", 0))
+      case ""                    => Some((Token(Token.EOF, "", line, column), "", 0))
       case newline(_, restInput) => takeToken(restInput, grammar, line + 1, 1)
       case comment(_, restInput) => takeToken(restInput, grammar, line + 1, 1)
       case blockComment(comment, restInput) =>
@@ -66,7 +66,7 @@ object Lexer {
       takeToken(input, grammar, line, column) match {
         case None =>
           Left(SyntaxError("Syntax error", Some(line), Some(column)))
-        case Some((token, _, _)) if token.tokenType == EOFToken => Right((token :: tokens).reverse)
+        case Some((token, _, _)) if token.tokenType == Token.EOF => Right((token :: tokens).reverse)
         case Some((token, restInput, lineNum)) =>
           loop(token :: tokens, restInput, lineNum, token.column + token.lexeme.length)
       }

@@ -26,55 +26,55 @@ class ExprSpec extends AnyFlatSpec with Matchers with EitherValues with Inside {
   }
 
   "toLiteral" should "convert valid ints" in {
-    inside(getValidLiteral(NumberToken, "42")) {
+    inside(getValidLiteral(Token.Number, "42")) {
       case Right(l: NumberLiteral) => l.value should be(42.0)
       case _                       => fail("Was incorrect literal")
     }
   }
 
   it should "convert valid doubles" in {
-    inside(getValidLiteral(NumberToken, "3.141592654")) {
+    inside(getValidLiteral(Token.Number, "3.141592654")) {
       case Right(l: NumberLiteral) => l.value should be(3.141592654)
       case _                       => fail("Was incorrect literal")
     }
   }
 
   it should "convert valid floats" in {
-    inside(getValidLiteral(NumberToken, "3.14")) {
+    inside(getValidLiteral(Token.Number, "3.14")) {
       case Right(l: NumberLiteral) => l.value should be(3.14)
       case _                       => fail("Was incorrect literal")
     }
   }
 
   it should "convert valid strings" in {
-    inside(getValidLiteral(StringToken, "hello")) {
+    inside(getValidLiteral(Token.String, "hello")) {
       case Right(l: StringLiteral) => l.value should be("hello")
       case _                       => fail("Was incorrect literal")
     }
   }
 
   it should "convert true" in {
-    inside(getValidLiteral(TrueToken, "true")) {
+    inside(getValidLiteral(Token.True, "true")) {
       case Right(l: BoolLiteral) => l.value should be(true)
       case _                     => fail("Was incorrect literal")
     }
   }
 
   it should "convert false" in {
-    inside(getValidLiteral(FalseToken, "false")) {
+    inside(getValidLiteral(Token.False, "false")) {
       case Right(l: BoolLiteral) => l.value should be(false)
       case _                     => fail("Was incorrect literal")
     }
   }
 
   it should "convert nil, ignoring lexeme" in {
-    inside(getValidLiteral(NilToken, "foo")) {
+    inside(getValidLiteral(Token.Nil, "foo")) {
       case Right(l: NilLiteral) => succeed
       case _                    => fail("Was incorrect literal")
     }
   }
 
-  it should "error on invalid number" in isErrorLiteral(NumberToken, "hello")
-  it should "error on invalid true" in isErrorLiteral(TrueToken, "world")
-  it should "error on invalid false" in isErrorLiteral(FalseToken, "world")
+  it should "error on invalid number" in isErrorLiteral(Token.Number, "hello")
+  it should "error on invalid true" in isErrorLiteral(Token.True, "world")
+  it should "error on invalid false" in isErrorLiteral(Token.False, "world")
 }

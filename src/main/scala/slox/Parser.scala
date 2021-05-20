@@ -12,7 +12,7 @@ object Parser {
 
   /** Search for next statement */
   def synchronise(tokens: List[Token]): List[Token] =
-    tokens.dropWhile(_.tokenType != SemicolonToken)
+    tokens.dropWhile(_.tokenType != Token.Semicolon)
 
   def consume(tokens: List[Token], ofType: TokenType): Context =
     tokens match {
@@ -51,14 +51,14 @@ object Parser {
       (Nil, NoExpr(), List(SyntaxError.error("Reached end of file while looking for literal!")))
     case token :: tailTokens =>
       token.tokenType match {
-        case TrueToken | FalseToken | NilToken | NumberToken | StringToken =>
+        case Token.True | Token.False | Token.Nil | Token.Number | Token.String =>
           Expr.toLiteral(token) match {
             case Left(error)    => (Nil, NoExpr(), List(error))
             case Right(literal) => (tailTokens, literal, Nil)
           }
-        case LeftParenToken => {
+        case Token.LeftParen => {
           val (restTokens1, expr, errors1) = expression(tailTokens)
-          val (restTokens2, _, errors2) = consume(restTokens1, RightParenToken)
+          val (restTokens2, _, errors2) = consume(restTokens1, Token.RightParen)
           errors2 match {
             case Nil => (restTokens2, Grouping(expr), errors1)
             case _   => (synchronise(restTokens2), expr, errors1 ++ errors2)
@@ -74,7 +74,7 @@ object Parser {
   }
 
   def unary(tokens: List[Token]): Context = {
-    val matches = List(BangToken, MinusToken)
+    val matches = List(Token.Bang, Token.Minus)
 
     tokens match {
       case Nil => (Nil, NoExpr(), List(SyntaxError.error("Unexpected end of file!")))
@@ -87,15 +87,15 @@ object Parser {
     }
   }
 
-  val factor = leftAssocBinOp(List(SlashToken, StarToken))(unary)
+  val factor = leftAssocBinOp(List(Token.Slash, Token.Star))(unary)
 
-  val term = leftAssocBinOp(List(MinusToken, PlusToken))(factor)
+  val term = leftAssocBinOp(List(Token.Minus, Token.Plus))(factor)
 
   val comparison =
-    leftAssocBinOp(List(GreaterToken, GreaterEqualToken, LessToken, LessEqualToken))(term)
+    leftAssocBinOp(List(Token.Greater, Token.GreaterEqual, Token.Less, Token.LessEqual))(term)
 
   val equality =
-    leftAssocBinOp(List(BangEqualToken, EqualEqualToken))(comparison)
+    leftAssocBinOp(List(Token.BangEqual, Token.EqualEqual))(comparison)
 
   val expression = equality
 
@@ -103,8 +103,8 @@ object Parser {
     val (unconsumed, expr, errors) = expression(tokens)
 
     val fullErrors = unconsumed match {
-      case Nil                             => errors
-      case Token(EOFToken, _, _, _) :: Nil => errors
+      case Nil                              => errors
+      case Token(Token.EOF, _, _, _) :: Nil => errors
       case token :: _ =>
         SyntaxError.fromToken(s"Unconsumed token ${token.tokenType}", token) :: errors
     }
