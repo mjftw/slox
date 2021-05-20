@@ -84,7 +84,7 @@ Args:
     } yield expression
 
     result match {
-      case Left(errors)      => errors.map(SyntaxError.formatError).mkString("\n")
+      case Left(errors)      => errors.map(_.format).mkString("\n")
       case Right(expression) => Expr.toString(expression)
     }
   }

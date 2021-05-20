@@ -1,11 +1,11 @@
 package slox.eval
 
-import slox.SyntaxError
+import slox.{Error, SyntaxError, RuntimeError}
 import slox.lexer._
 import slox.parser._
 
 object Eval {
-  private def evaluateBinary(expr: Binary): Either[List[SyntaxError], Expr] = {
+  private def evaluateBinary(expr: Binary): Either[List[slox.Error], Expr] = {
     val leftResult = evaluate(expr.left)
     val rightResult = evaluate(expr.right)
 
@@ -29,7 +29,7 @@ object Eval {
           case (l, _, r) =>
             Left(
               List(
-                SyntaxError.error(
+                slox.SyntaxError.error(
                   s"Invalid operation: ${Expr.toString(l)} ${expr.operator.lexeme} ${Expr.toString(r)}"
                 )
               )
@@ -41,7 +41,7 @@ object Eval {
     }
   }
 
-  private def evaluateUnary(expr: Unary): Either[List[SyntaxError], Expr] = {
+  private def evaluateUnary(expr: Unary): Either[List[slox.Error], Expr] = {
     val rightResult = evaluate(expr.right)
 
     (expr.operator.tokenType, rightResult) match {
@@ -62,10 +62,10 @@ object Eval {
     }
   }
 
-  private def evaluateGrouping(expr: Grouping): Either[List[SyntaxError], Expr] =
+  private def evaluateGrouping(expr: Grouping): Either[List[slox.Error], Expr] =
     evaluate(expr.expr)
 
-  def evaluate(expr: Expr): Either[List[SyntaxError], Expr] = expr match {
+  def evaluate(expr: Expr): Either[List[slox.Error], Expr] = expr match {
     case _: StringLiteral | _: NumberLiteral | _: BoolLiteral | _: NilLiteral =>
       Right(expr)
     case expr: Binary   => evaluateBinary(expr)
